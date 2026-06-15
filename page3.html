@@ -3,88 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>😅 ايه ده</title>
+    <title>😏 خلص كلام</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
         body {
-            overflow: hidden;
             background: radial-gradient(ellipse at center, #1a1025 0%, #0a0a0f 70%);
-        }
-
-        .p3-wrap {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
-            position: relative;
+            padding: 1rem;
         }
 
-        .p3-card {
-            position: relative;
-            z-index: 1;
-            max-width: 500px;
+        .p3-box {
+            max-width: 380px;
             width: 100%;
             text-align: center;
-            animation: scaleIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: scaleIn 0.6s ease;
         }
 
         .p3-icon {
-            font-size: 5rem;
-            margin-bottom: 1rem;
-            animation: pulse 1.5s ease-in-out infinite;
-            display: inline-block;
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            animation: pulse 2s ease-in-out infinite;
         }
 
         .p3-title {
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--accent-gold), var(--accent-rose), var(--accent-gold));
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: shimmer 3s ease infinite;
-            margin: 1rem 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+            line-height: 1.6;
         }
 
         .p3-sub {
-            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            font-size: 0.9rem;
             color: var(--text-secondary);
-            margin-bottom: 2rem;
-            line-height: 1.8;
+            margin-bottom: 1.5rem;
         }
 
-        .p3-btn {
-            padding: 1rem 2.5rem;
-            font-size: 1.1rem;
+        .p3-display {
+            width: 160px;
+            height: 60px;
+            margin: 0 auto 1.5rem;
+            background: #1a1a24;
+            border: 2px solid #333;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
             font-weight: 700;
             font-family: var(--font-main);
-            border: 1px solid var(--border-glow);
-            border-radius: 50px;
+            color: var(--text-primary);
+            letter-spacing: 8px;
+            direction: ltr;
+            transition: border-color 0.3s;
+        }
+
+        .p3-display.filled {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 20px var(--shadow-gold);
+        }
+
+        .p3-numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+            max-width: 250px;
+            margin: 0 auto 1rem;
+        }
+
+        .p3-num {
+            height: 55px;
+            border: none;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-primary);
+            font-size: 1.4rem;
+            font-weight: 700;
+            font-family: var(--font-main);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .p3-num:active {
+            transform: scale(0.92);
+            background: rgba(212, 168, 83, 0.15);
+        }
+
+        .p3-num.clear {
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+            font-size: 1rem;
+        }
+
+        .p3-done {
+            width: 100%;
+            max-width: 250px;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 14px;
             background: linear-gradient(135deg, var(--accent-gold), #f0d080);
             color: #0a0a0f;
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: var(--font-main);
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 0 30px var(--shadow-gold);
+            box-shadow: 0 0 20px var(--shadow-gold);
         }
 
-        .p3-btn:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 50px var(--shadow-gold);
+        .p3-done:active {
+            transform: scale(0.95);
         }
 
-        .p3-btn:active {
-            transform: scale(0.92);
+        .p3-done:disabled {
+            opacity: 0.4;
+            transform: none;
+            box-shadow: none;
         }
+
+        .p3-error {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 14px;
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            animation: scaleIn 0.4s ease;
+        }
+
+        .p3-error p {
+            color: #e74c3c;
+            font-size: 0.95rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+
+        .p3-error .error-icon {
+            font-size: 2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .p3-block-timer {
+            margin-top: 0.8rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .hidden { display: none !important; }
 
         .p3-stars {
             position: fixed;
             inset: 0;
             pointer-events: none;
             overflow: hidden;
+            z-index: 0;
         }
 
         .p3-star {
@@ -98,34 +179,40 @@
             0%, 100% { opacity: 0; transform: scale(0); }
             50% { opacity: 1; transform: scale(1); }
         }
-
-        .p3-float-emoji {
-            position: fixed;
-            font-size: 2rem;
-            pointer-events: none;
-            animation: p3EmojiFloat 5s ease-in-out infinite;
-        }
-
-        @keyframes p3EmojiFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
-            25% { transform: translateY(-25px) rotate(8deg); opacity: 0.7; }
-            50% { transform: translateY(-10px) rotate(-5deg); opacity: 0.4; }
-            75% { transform: translateY(-30px) rotate(5deg); opacity: 0.6; }
-        }
     </style>
 </head>
 <body>
     <div class="p3-stars" id="p3Stars"></div>
 
-    <div class="p3-wrap">
-        <div class="p3-card">
-            <div class="p3-icon">😅</div>
-            <h1 class="p3-title">هو انت لسه شفت حاجه؟</h1>
-            <p class="p3-sub">
-                استني عليا ياض 😂<br>
-                لسه فيه حاجات كتير 😏
-            </p>
-            <button class="p3-btn" onclick="window.location.href='index.html'">⬅️ رجع للصفحة الأولى</button>
+    <div class="p3-box">
+        <div class="p3-icon">🤨</div>
+        <h1 class="p3-title">كلمت كام وحدة في حياتك؟</h1>
+        <p class="p3-sub">و انا هرجعك للصفحة 😏</p>
+
+        <div class="p3-display" id="display"></div>
+
+        <div class="p3-numpad">
+            <button class="p3-num" data-n="1">1</button>
+            <button class="p3-num" data-n="2">2</button>
+            <button class="p3-num" data-n="3">3</button>
+            <button class="p3-num" data-n="4">4</button>
+            <button class="p3-num" data-n="5">5</button>
+            <button class="p3-num" data-n="6">6</button>
+            <button class="p3-num" data-n="7">7</button>
+            <button class="p3-num" data-n="8">8</button>
+            <button class="p3-num" data-n="9">9</button>
+            <button class="p3-num" data-n=""></button>
+            <button class="p3-num" data-n="0">0</button>
+            <button class="p3-num clear" id="clearBtn">مسح</button>
+        </div>
+
+        <button class="p3-done" id="doneBtn">تم ✅</button>
+
+        <div id="errorBox" class="p3-error hidden">
+            <div class="error-icon">🚫</div>
+            <p>غلط! انا عارف انت كلمت كام بنت 🫵😂</p>
+            <p style="margin-top:0.3rem;font-size:0.85rem;color:var(--text-secondary);">خد حظر دقيقة 🤫</p>
+            <div class="p3-block-timer" id="blockTimer">انتظر 60 ثانية...</div>
         </div>
     </div>
 
@@ -135,78 +222,88 @@
             window.location.href = 'index.html';
         }
 
-        // Stars
+        // ===== STARS =====
         const starsContainer = document.getElementById('p3Stars');
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 40; i++) {
             const s = document.createElement('div');
             s.className = 'p3-star';
             s.style.left = Math.random() * 100 + '%';
             s.style.top = Math.random() * 100 + '%';
-            s.style.width = s.style.height = (1 + Math.random() * 3) + 'px';
+            s.style.width = s.style.height = (1 + Math.random() * 2) + 'px';
             s.style.animationDuration = (2 + Math.random() * 3) + 's';
             s.style.animationDelay = (Math.random() * 4) + 's';
             starsContainer.appendChild(s);
         }
 
-        // Floating emojis
-        const emojis = ['😅', '😂', '🤣', '😏', '🙃', '🤨', '😤'];
-        for (let i = 0; i < 6; i++) {
-            const e = document.createElement('div');
-            e.className = 'p3-float-emoji';
-            e.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            e.style.left = Math.random() * 100 + '%';
-            e.style.top = Math.random() * 100 + '%';
-            e.style.fontSize = (1.5 + Math.random() * 2) + 'rem';
-            e.style.animationDelay = (Math.random() * 4) + 's';
-            e.style.animationDuration = (4 + Math.random() * 3) + 's';
-            document.body.appendChild(e);
+        // ===== NUMPAD =====
+        const display = document.getElementById('display');
+        const doneBtn = document.getElementById('doneBtn');
+        const errorBox = document.getElementById('errorBox');
+        const clearBtn = document.getElementById('clearBtn');
+        const blockTimerEl = document.getElementById('blockTimer');
+        let value = '';
+        let blocked = false;
+
+        function updateDisplay() {
+            const displayText = value.padEnd(3, '_').split('').join(' ');
+            display.textContent = displayText;
+            if (value.length === 3) {
+                display.classList.add('filled');
+            } else {
+                display.classList.remove('filled');
+            }
+            doneBtn.disabled = value.length !== 3;
         }
 
-        // Confetti
-        const canvas = document.createElement('canvas');
-        canvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9998';
-        document.body.appendChild(canvas);
-        const ctx = canvas.getContext('2d');
-        let W, H, pieces = [];
+        document.querySelectorAll('.p3-num[data-n]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (blocked) return;
+                const n = btn.dataset.n;
+                if (value.length < 3) {
+                    value += n;
+                    updateDisplay();
+                }
+            });
+        });
 
-        function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-        resize();
-        window.addEventListener('resize', resize);
+        clearBtn.addEventListener('click', () => {
+            if (blocked) return;
+            value = value.slice(0, -1);
+            updateDisplay();
+        });
 
-        class P {
-            constructor() {
-                this.x = Math.random() * W;
-                this.y = Math.random() * H - H;
-                this.w = 3 + Math.random() * 5;
-                this.h = 2 + Math.random() * 4;
-                this.c = ['#d4a853','#c08497','#5fa8a0','#f0d080','#e74c3c','#2ecc71','#9b59b6'][Math.floor(Math.random()*7)];
-                this.s = 1 + Math.random() * 2;
-                this.wind = (Math.random() - 0.5) * 0.5;
-                this.r = Math.random() * 360;
-                this.rs = (Math.random() - 0.5) * 4;
+        doneBtn.addEventListener('click', () => {
+            if (blocked || value.length !== 3) return;
+
+            if (value === '111') {
+                // Correct - go back
+                doneBtn.textContent = 'تمام 🎉';
+                setTimeout(() => { window.location.href = 'index.html'; }, 800);
+            } else {
+                // Wrong - block for 1 minute
+                blocked = true;
+                errorBox.classList.remove('hidden');
+                doneBtn.disabled = true;
+
+                let seconds = 60;
+                blockTimerEl.textContent = `انتظر ${seconds} ثانية...`;
+                const interval = setInterval(() => {
+                    seconds--;
+                    blockTimerEl.textContent = `انتظر ${seconds} ثانية...`;
+                    if (seconds <= 0) {
+                        clearInterval(interval);
+                        blocked = false;
+                        errorBox.classList.add('hidden');
+                        doneBtn.disabled = false;
+                        value = '';
+                        updateDisplay();
+                        blockTimerEl.textContent = '';
+                    }
+                }, 1000);
             }
-            u() {
-                this.y += this.s; this.x += this.wind; this.r += this.rs;
-                if (this.y > H + 20) { this.y = -20; this.x = Math.random() * W; }
-            }
-            d() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.r * Math.PI / 180);
-                ctx.fillStyle = this.c;
-                ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h);
-                ctx.restore();
-            }
-        }
+        });
 
-        for (let i = 0; i < 60; i++) pieces.push(new P());
-
-        function loop() {
-            ctx.clearRect(0, 0, W, H);
-            pieces.forEach(p => { p.u(); p.d(); });
-            requestAnimationFrame(loop);
-        }
-        loop();
+        updateDisplay();
     </script>
 </body>
 </html>
