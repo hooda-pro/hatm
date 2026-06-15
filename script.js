@@ -100,11 +100,19 @@ document.addEventListener('DOMContentLoaded', () => {
         glow.style.top = e.clientY + 'px';
     });
 
-    // ========== PASS BOX ENTRANCE ==========
-    setTimeout(() => {
-        passBox.style.opacity = '1';
-        passBox.style.transform = 'translateY(0)';
-    }, 200);
+    // ========== AUTO-LOGIN IF AUTHENTICATED ==========
+    if (sessionStorage.getItem('auth')) {
+        overlay.classList.add('hidden');
+        mainContent.classList.remove('hidden');
+        document.body.style.overflow = 'auto';
+        startHeroAnimation();
+        startCardsObserver();
+    } else {
+        setTimeout(() => {
+            passBox.style.opacity = '1';
+            passBox.style.transform = 'translateY(0)';
+        }, 200);
+    }
 
     // ========== PASSWORD ==========
     function checkPassword() {
@@ -139,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => spark.remove(), 1500);
             }
 
+            sessionStorage.setItem('auth', 'true');
             setTimeout(() => {
                 overlay.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
                 overlay.style.opacity = '0';

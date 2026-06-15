@@ -228,6 +228,116 @@
             0%, 100% { opacity: 0; transform: scale(0); }
             50% { opacity: 1; transform: scale(1); }
         }
+
+        /* ===== DIALOG ===== */
+        .p2-dialog {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .p2-dialog-content {
+            background: rgba(18, 18, 26, 0.96);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            max-width: 380px;
+            width: 90%;
+            box-shadow: 0 0 80px var(--shadow-gold);
+            animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .p2-dialog-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .p2-dialog-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .p2-dialog-sub {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .p2-dialog-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .p2-dialog-btn {
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: var(--font-main);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 100px;
+        }
+
+        .p2-dialog-yes {
+            background: linear-gradient(135deg, var(--accent-gold), #f0d080);
+            color: #0a0a0f;
+            box-shadow: 0 0 20px var(--shadow-gold);
+        }
+
+        .p2-dialog-yes:hover {
+            transform: scale(1.06);
+            box-shadow: 0 0 40px var(--shadow-gold);
+        }
+
+        .p2-dialog-no {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .p2-dialog-no:hover {
+            background: rgba(231, 76, 60, 0.2);
+            border-color: #e74c3c;
+            transform: scale(1.06);
+        }
+
+        .p2-dialog-btn:active {
+            transform: scale(0.92);
+        }
+
+        .p2-timer {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            margin: 1rem auto 0;
+            animation: timerPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes timerPulse {
+            0%, 100% { box-shadow: 0 0 20px var(--shadow-gold); transform: scale(1); }
+            50% { box-shadow: 0 0 40px var(--shadow-gold), 0 0 60px rgba(212,168,83,0.2); transform: scale(1.05); }
+        }
     </style>
 </head>
 <body>
@@ -265,19 +375,43 @@
                 </p>
             </div>
 
-            <a href="index.html">
-                <button class="back-btn">⬅️ رجعني للصفحة الأولى</button>
-            </a>
+            <button class="back-btn" id="backBtn">⬅️ رجعني للصفحة الأولى</button>
 
             <div style="margin-top:2rem;padding:1.5rem;background:rgba(255,255,255,0.03);border-radius:20px;border:1px dashed rgba(212,168,83,0.2);animation:fadeInUp 0.8s ease 1s both;">
                 <p style="font-size:1.4rem;font-weight:700;color:var(--accent-gold);animation:pulse 1.5s ease-in-out infinite;">
                     تيجي روم ياض اطلعك اقصاء 😂🫵
                 </p>
             </div>
+    </div>
+
+    <!-- ===== CUSTOM DIALOG ===== -->
+    <div id="confirmDialog" class="p2-dialog hidden">
+        <div class="p2-dialog-content">
+            <div class="p2-dialog-icon">🤨</div>
+            <h3 class="p2-dialog-title">دقيقه هو انت عايز ترجع؟</h3>
+            <div class="p2-dialog-buttons">
+                <button class="p2-dialog-btn p2-dialog-yes" id="dialogYes">ايوا 😎</button>
+                <button class="p2-dialog-btn p2-dialog-no" id="dialogNo">لا 😤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TIMER DIALOG ===== -->
+    <div id="timerDialog" class="p2-dialog hidden">
+        <div class="p2-dialog-content">
+            <div class="p2-dialog-icon">😏</div>
+            <h3 class="p2-dialog-title">عايز ترجع متأكد؟</h3>
+            <p class="p2-dialog-sub">طيب مفيش رجوع يلا 🙃</p>
+            <div class="p2-timer" id="p2Timer">8</div>
         </div>
     </div>
 
     <script>
+        // ===== AUTH CHECK =====
+        if (!sessionStorage.getItem('auth')) {
+            window.location.href = 'index.html';
+        }
+
         // ===== FALLING HEARTS =====
         const heartsContainer = document.getElementById('fallingHearts');
         const heartEmojis = ['❤️', '💖', '💗', '💕', '🩷'];
@@ -392,6 +526,62 @@
             requestAnimationFrame(loop);
         }
         loop();
+
+        // ===== DIALOG LOGIC =====
+        const confirmDialog = document.getElementById('confirmDialog');
+        const timerDialog = document.getElementById('timerDialog');
+        const dialogYes = document.getElementById('dialogYes');
+        const dialogNo = document.getElementById('dialogNo');
+        const p2Timer = document.getElementById('p2Timer');
+        const backBtn = document.getElementById('backBtn');
+        let timerInterval = null;
+
+        function showConfirmDialog() {
+            confirmDialog.classList.remove('hidden');
+            confirmDialog.style.animation = 'fadeIn 0.3s ease';
+        }
+
+        function hideConfirmDialog() {
+            confirmDialog.classList.add('hidden');
+        }
+
+        function showTimerDialog() {
+            timerDialog.classList.remove('hidden');
+            timerDialog.style.animation = 'fadeIn 0.3s ease';
+            let count = 8;
+            p2Timer.textContent = count;
+            timerInterval = setInterval(() => {
+                count--;
+                p2Timer.textContent = count;
+                if (count <= 0) {
+                    clearInterval(timerInterval);
+                    window.location.href = 'index.html';
+                }
+            }, 1000);
+        }
+
+        backBtn.addEventListener('click', showConfirmDialog);
+
+        dialogYes.addEventListener('click', () => {
+            hideConfirmDialog();
+            showTimerDialog();
+        });
+
+        dialogNo.addEventListener('click', () => {
+            hideConfirmDialog();
+            window.location.href = 'page3.html';
+        });
+
+        confirmDialog.addEventListener('click', (e) => {
+            if (e.target === confirmDialog) hideConfirmDialog();
+        });
+
+        timerDialog.addEventListener('click', (e) => {
+            if (e.target === timerDialog) {
+                clearInterval(timerInterval);
+                window.location.href = 'index.html';
+            }
+        });
     </script>
 </body>
 </html>
