@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let flippedCount = 0;
     let isProcessingPassword = false;
     let cardsRevealed = false;
+    let scrollListenerActive = false;
 
     // ========== RESIZE ==========
     function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
@@ -37,9 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let particles = [];
 
     class Particle {
-        constructor() {
-            this.reset(true);
-        }
+        constructor() { this.reset(true); }
         reset(init) {
             this.x = Math.random() * W;
             this.y = init ? Math.random() * H : H + 10;
@@ -123,10 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let i = 0; i < 20; i++) {
                 const spark = document.createElement('div');
                 spark.textContent = '✨';
+                const rect = passBox.getBoundingClientRect();
                 spark.style.cssText = `
                     position: fixed; font-size: 1.2rem; pointer-events: none; z-index: 1001;
-                    left: ${passBox.getBoundingClientRect().left + passBox.getBoundingClientRect().width/2}px;
-                    top: ${passBox.getBoundingClientRect().top + passBox.getBoundingClientRect().height/2}px;
+                    left: ${rect.left + rect.width/2}px;
+                    top: ${rect.top + rect.height/2}px;
                     transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
                 `;
                 document.body.appendChild(spark);
@@ -150,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     mainContent.classList.remove('hidden');
                     document.body.style.overflow = 'auto';
                     startHeroAnimation();
+                    startCardsObserver();
                     isProcessingPassword = false;
                 }, 700);
             }, 600);
@@ -267,7 +268,14 @@ document.addEventListener('DOMContentLoaded', () => {
         cLoop();
     }
 
-    // ========== CARDS APPEAR ON SCROLL ==========
+    // ========== CARDS OBSERVER ==========
+    function revealCards() {
+        if (cardsRevealed) return;
+        cardsRevealed = true;
+        cardsSection.classList.add('visible');
+        setTimeout(() => showCardsOneByOne(), 300);
+    }
+
     function showCardsOneByOne() {
         cards.forEach((card, i) => {
             setTimeout(() => {
@@ -278,28 +286,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const cardsObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && !cardsRevealed) {
-                cardsRevealed = true;
-                cardsSection.classList.add('visible');
-                setTimeout(() => showCardsOneByOne(), 300);
-                cardsObserver.unobserve(cardsSection);
+    function startCardsObserver() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !cardsRevealed) {
+                    revealCards();
+                    observer.unobserve(cardsSection);
+                }
+            });
+        }, { threshold: 0.05, rootMargin: '50px' });
+
+        setTimeout(() => {
+            observer.observe(cardsSection);
+        }, 500);
+
+        // Scroll fallback: detect when hero is scrolled past
+        function scrollCheck() {
+            if (cardsRevealed) { window.removeEventListener('scroll', scrollCheck); return; }
+            const heroBottom = hero.getBoundingClientRect().bottom;
+            if (heroBottom < window.innerHeight * 0.3) {
+                revealCards();
+                window.removeEventListener('scroll', scrollCheck);
             }
-        });
-    }, { threshold: 0.1 });
+        }
+        window.addEventListener('scroll', scrollCheck, { passive: true });
+    }
 
-    setTimeout(() => {
-        cardsObserver.observe(cardsSection);
-    }, 2200);
-
+    // Next hint click scrolls to cards
     nextHint.addEventListener('click', () => {
         cardsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        if (!cardsRevealed) {
-            cardsRevealed = true;
-            cardsSection.classList.add('visible');
-            setTimeout(() => showCardsOneByOne(), 300);
-        }
+        if (!cardsRevealed) revealCards();
     });
 
     // ========== CARDS FLIP ==========
@@ -319,8 +335,9 @@ document.addEventListener('DOMContentLoaded', () => {
             flippedCount++;
             updateProgress();
 
-            const cx = e.clientX || (this.getBoundingClientRect().left + this.getBoundingClientRect().width/2);
-            const cy = e.clientY || (this.getBoundingClientRect().top + this.getBoundingClientRect().height/2);
+            const rect = this.getBoundingClientRect();
+            const cx = e.clientX || rect.left + rect.width/2;
+            const cy = e.clientY || rect.top + rect.height/2;
             for (let i = 0; i < 6; i++) {
                 const s = document.createElement('div');
                 s.textContent = '✨';
@@ -388,13 +405,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 cardsSection.style.opacity = '0';
                 cardsSection.style.transform = 'translateY(-50px)';
                 setTimeout(() => {
-                    cardsSection.classList.add('hidden');
+                    cardsSection.classList.remove('visible');
+                    cardsSection.classList.add('cards-section-hidden');
                     cardsSection.style.opacity = '';
                     cardsSection.style.transform = '';
                     showCTA();
                 }, 600);
             }, cards.length * 100 + 500);
-
         }, 1800);
     }
 
@@ -412,7 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
             s.style.cssText = `
                 position:fixed;font-size:1.2rem;pointer-events:none;z-index:999;
                 left:${20 + Math.random()*60}%;top:${20 + Math.random()*60}%;
-                animation: sparklePop 1s ease forwards;
+                animation:sparklePop 1s ease forwards;
             `;
             document.body.appendChild(s);
             setTimeout(() => s.remove(), 1500);
@@ -464,9 +481,10 @@ document.addEventListener('DOMContentLoaded', () => {
         void frame.offsetHeight;
         const photoNum = index + 1;
         frame.innerHTML = `
-            <div style="width:100%;height:100%;padding:0;">
+            <div style="width:100%;height:100%;overflow:hidden;border-radius:18px;">
                 <img src="photo-${photoNum}.jpg" alt="${photoTitles[index]}"
-                     style="width:100%;height:100%;object-fit:cover;border-radius:18px;display:block;">
+                     style="width:100%;height:100%;object-fit:cover;display:block;"
+                     onerror="this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:0.5rem;\'><span style=\'font-size:3rem;\'>🖼️</span><p style=\'color:var(--text-secondary);\'>الصورة مش موجودة</p></div>'">
             </div>
         `;
         frame.style.animation = 'scaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards';
