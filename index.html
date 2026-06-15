@@ -3,29 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎂 عيد ميلاد هيثم</title>
+    <title>موقع خاص</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <canvas id="bgCanvas"></canvas>
+
     <div id="passwordOverlay" class="overlay">
+        <div class="bubbles-container">
+            <div class="bubble" style="--x:10%;--s:6;--d:0s;"></div>
+            <div class="bubble" style="--x:25%;--s:4;--d:0.5s;"></div>
+            <div class="bubble" style="--x:40%;--s:8;--d:1s;"></div>
+            <div class="bubble" style="--x:55%;--s:5;--d:1.5s;"></div>
+            <div class="bubble" style="--x:70%;--s:7;--d:2s;"></div>
+            <div class="bubble" style="--x:85%;--s:3;--d:2.5s;"></div>
+            <div class="bubble" style="--x:15%;--s:5;--d:3s;"></div>
+            <div class="bubble" style="--x:50%;--s:6;--d:0.8s;"></div>
+            <div class="bubble" style="--x:30%;--s:4;--d:1.2s;"></div>
+            <div class="bubble" style="--x:65%;--s:7;--d:1.8s;"></div>
+            <div class="bubble" style="--x:90%;--s:5;--d:2.2s;"></div>
+            <div class="bubble" style="--x:5%;--s:3;--d:0.3s;"></div>
+            <div class="bubble" style="--x:45%;--s:8;--d:1.7s;"></div>
+            <div class="bubble" style="--x:78%;--s:4;--d:2.8s;"></div>
+            <div class="bubble" style="--x:20%;--s:6;--d:3.2s;"></div>
+        </div>
+
         <div class="password-box">
-            <div class="lock-icon">🔒</div>
-            <h1>موقع عيد ميلاد هيثم</h1>
-            <p>ياريت تكتب كلمة السر عشان تدخل</p>
+            <div class="pass-icon">🔑</div>
+            <h1 class="pass-title">موقع خاص</h1>
+            <p class="pass-sub">ياريت تكتب كلمة السر عشان تدخل</p>
             <div class="input-group">
-                <input type="password" id="passwordInput" placeholder="اكتب كلمة السر" autofocus>
-                <button id="loginBtn">دخول</button>
+                <input type="password" id="passwordInput" placeholder="•••••••" autofocus>
+                <button id="loginBtn">➡️</button>
             </div>
-            <p id="errorMsg" class="error hidden">غلط! حاول تاني 🫵</p>
+            <p id="errorMsg" class="error hidden">غلط! حاول تاني 🫵😂</p>
         </div>
     </div>
 
     <div id="mainContent" class="hidden">
-
-        <canvas id="confettiCanvas"></canvas>
-
-        <section class="hero">
+        <section class="hero" id="hero">
             <div class="hero-bg"></div>
             <div class="hero-content">
                 <div class="balloons">
@@ -33,94 +52,119 @@
                     <div class="balloon b2">🎈</div>
                     <div class="balloon b3">🎈</div>
                     <div class="balloon b4">🎈</div>
+                    <div class="balloon b5">🎈</div>
+                    <div class="balloon b6">🎈</div>
                 </div>
-                <h1 class="main-title">كل عام وانت طيب يا قلبي 🫶</h1>
-                <p class="sub-title">عيد ميلاد سعيد يا هيثم 🤍</p>
-                <div class="scroll-hint">
-                    <span>جرب تنزل تحت</span>
+                <h1 class="main-title glitch" data-text="كل سنة وانت طيب يا قلبي 🤍">كل سنة وانت طيب يا قلبي 🤍</h1>
+                <p class="sub-title">كل عام و انت بخير و سعادة يا أغلى الناس 🫶</p>
+                <div class="next-hint" id="nextHint">
+                    <span>اضغط عشان تكمل 👇</span>
                     <div class="scroll-arrow">⬇️</div>
                 </div>
             </div>
         </section>
 
-        <section class="cards-section" id="cardsSection">
-            <div class="section-divider">
-                <span>✦</span>
+        <section class="cards-section hidden" id="cardsSection">
+            <div class="cards-header">
+                <h2 class="section-title">ذكرياتنا 🔥</h2>
+                <p class="section-sub">اضغط على كل بطاقة عشان تشوف الذكرى</p>
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <span class="progress-text" id="progressText">0 / 4</span>
+                </div>
             </div>
-            <h2 class="section-title">ذكريات 🔥</h2>
+
             <div class="cards-grid">
-                <div class="card card-type-a" data-index="0">
+                <div class="card" data-index="0">
                     <div class="card-inner">
-                        <div class="card-front">
-                            <div class="card-icon">🎉</div>
-                            <h3>بطاقة ١</h3>
+                        <div class="card-front" style="background:linear-gradient(145deg,#1a1025,#241530);">
+                            <div class="card-num">01</div>
+                            <div class="card-front-icon">🎯</div>
+                            <h3>ذكرى أولى</h3>
                             <p>اضغط عشان تشوف</p>
                         </div>
                         <div class="card-back">
-                            <div class="photo-placeholder photo-1"></div>
+                            <div class="photo-placeholder photo-1">
+                                <div class="photo-label">📸 حط الصورة هنا</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="card card-type-a" data-index="1">
+                <div class="card" data-index="1">
                     <div class="card-inner">
-                        <div class="card-front">
-                            <div class="card-icon">🎊</div>
-                            <h3>بطاقة ٢</h3>
+                        <div class="card-front" style="background:linear-gradient(145deg,#1a1025,#241530);">
+                            <div class="card-num">02</div>
+                            <div class="card-front-icon">🎯</div>
+                            <h3>ذكرى ثانية</h3>
                             <p>اضغط عشان تشوف</p>
                         </div>
                         <div class="card-back">
-                            <div class="photo-placeholder photo-2"></div>
+                            <div class="photo-placeholder photo-2">
+                                <div class="photo-label">📸 حط الصورة هنا</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="card card-type-b" data-index="2">
+                <div class="card" data-index="2">
                     <div class="card-inner">
-                        <div class="card-front">
-                            <div class="card-icon">💫</div>
-                            <h3>بطاقة ٣</h3>
+                        <div class="card-front" style="background:linear-gradient(145deg,#0f1a1e,#152228);">
+                            <div class="card-num">03</div>
+                            <div class="card-front-icon">🎯</div>
+                            <h3>ذكرى ثالثة</h3>
                             <p>اضغط عشان تشوف</p>
                         </div>
                         <div class="card-back">
-                            <div class="photo-placeholder photo-3"></div>
+                            <div class="photo-placeholder photo-3">
+                                <div class="photo-label">📸 حط الصورة هنا</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="card card-type-b" data-index="3">
+                <div class="card" data-index="3">
                     <div class="card-inner">
-                        <div class="card-front">
-                            <div class="card-icon">✨</div>
-                            <h3>بطاقة ٤</h3>
+                        <div class="card-front" style="background:linear-gradient(145deg,#0f1a1e,#152228);">
+                            <div class="card-num">04</div>
+                            <div class="card-front-icon">🎯</div>
+                            <h3>ذكرى رابعة</h3>
                             <p>اضغط عشان تشوف</p>
                         </div>
                         <div class="card-back">
-                            <div class="photo-placeholder photo-4"></div>
+                            <div class="photo-placeholder photo-4">
+                                <div class="photo-label">📸 حط الصورة هنا</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="scroll-hint-2">
-                <span>نزل تحت كمان شوية 👇</span>
+
+            <div class="cards-complete hidden" id="cardsComplete">
+                <div class="complete-icon">🎉</div>
+                <p class="complete-text">خلصنا بقى 😂</p>
             </div>
         </section>
 
-        <section class="cta-section" id="ctaSection">
-            <div class="section-divider">
-                <span>✦</span>
-            </div>
+        <section class="cta-section hidden" id="ctaSection">
+            <div class="cta-glow"></div>
             <div class="cta-content">
-                <h2>استني لسه فيه كمان 😏</h2>
-                <button id="ctaBtn" class="cta-button">اضغط هنا يا بتاع 🫵</button>
+                <div class="cta-tease">
+                    <span class="tease-icon">🤔</span>
+                    <h2>لسه فاضلك حاجة كمان 😏</h2>
+                </div>
+                <button id="ctaBtn" class="cta-button">اضغط هنا يا بتاع البنات 😂🫵</button>
+                <p class="cta-sub">أوعى تندم 😎</p>
             </div>
         </section>
-
     </div>
 
     <div id="photoModal" class="modal hidden">
         <span class="modal-close">&times;</span>
         <div class="modal-content">
             <div class="modal-photo-frame">
-                <p class="modal-placeholder-text">🖼️ الصورة هنا</p>
-                <p class="modal-sub">حط الصورة بدل النص ده</p>
+                <div class="modal-photo-inner">
+                    <div class="modal-icon">🖼️</div>
+                    <h3 class="modal-photo-title">الصورة</h3>
+                    <p class="modal-photo-sub">حط الصورة هنا بدل النص ده</p>
+                </div>
             </div>
         </div>
     </div>

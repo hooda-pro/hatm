@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const password = 'Haitham';
+    const PASSWORD = 'Haitham';
     const overlay = document.getElementById('passwordOverlay');
     const mainContent = document.getElementById('mainContent');
     const passwordInput = document.getElementById('passwordInput');
@@ -10,16 +10,83 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('photoModal');
     const modalClose = document.querySelector('.modal-close');
     const ctaBtn = document.getElementById('ctaBtn');
-    const canvas = document.getElementById('confettiCanvas');
-    const ctx = canvas.getContext('2d');
+    const ctaSection = document.getElementById('ctaSection');
+    const nextHint = document.getElementById('nextHint');
+    const cardsSection = document.getElementById('cardsSection');
+    const cardsComplete = document.getElementById('cardsComplete');
+    const progressFill = document.querySelector('.progress-fill');
+    const progressText = document.getElementById('progressText');
+    const hero = document.getElementById('hero');
 
-    // === PASSWORD ===
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+
+    let flippedCount = 0;
+    let showingCTA = false;
+
+    // ========== RESIZE ==========
+    function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // ========== BG PARTICLES ==========
+    let particles = [];
+
+    class Particle {
+        constructor() {
+            this.reset(true);
+        }
+        reset(init) {
+            this.x = Math.random() * W;
+            this.y = init ? Math.random() * H : H + 10;
+            this.r = 1 + Math.random() * 2.5;
+            this.speed = 0.3 + Math.random() * 0.8;
+            this.wind = (Math.random() - 0.5) * 0.3;
+            this.alpha = 0.2 + Math.random() * 0.5;
+            this.pulseSpeed = 0.01 + Math.random() * 0.02;
+            this.pulseOffset = Math.random() * Math.PI * 2;
+        }
+        update() {
+            this.y -= this.speed;
+            this.x += this.wind;
+            if (this.y < -20) this.reset();
+        }
+        draw() {
+            const alpha = this.alpha * (0.7 + 0.3 * Math.sin(Date.now() * this.pulseSpeed + this.pulseOffset));
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(212, 168, 83, ${alpha * 0.4})`;
+            ctx.fill();
+        }
+    }
+
+    for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+    function animateParticles() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // ========== PASSWORD ==========
     function checkPassword() {
-        if (passwordInput.value.trim() === password) {
-            overlay.classList.add('hidden');
-            mainContent.classList.remove('hidden');
-            document.body.style.overflow = 'auto';
-            startConfetti();
+        if (passwordInput.value.trim() === PASSWORD) {
+            overlay.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            overlay.style.opacity = '0';
+            overlay.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                overlay.style.opacity = '';
+                overlay.style.transform = '';
+                mainContent.classList.remove('hidden');
+                document.body.style.overflow = 'auto';
+                startHeroAnimation();
+            }, 600);
         } else {
             errorMsg.classList.remove('hidden');
             passwordInput.value = '';
@@ -33,87 +100,120 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') checkPassword();
     });
 
-    // === CONFETTI ===
-    let confettiPieces = [];
-    let confettiRunning = true;
-
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    class ConfettiPiece {
-        constructor() {
-            this.reset();
-        }
-        reset() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height - canvas.height;
-            this.w = 6 + Math.random() * 6;
-            this.h = 4 + Math.random() * 4;
-            this.color = ['#d4a853', '#c08497', '#5fa8a0', '#f0d080', '#e74c3c', '#2ecc71', '#9b59b6', '#e67e22'][Math.floor(Math.random() * 8)];
-            this.rot = Math.random() * 360;
-            this.speed = 1.5 + Math.random() * 2;
-            this.wind = (Math.random() - 0.5) * 0.5;
-            this.rotSpeed = (Math.random() - 0.5) * 4;
-        }
-        update() {
-            this.y += this.speed;
-            this.x += this.wind;
-            this.rot += this.rotSpeed;
-            if (this.y > canvas.height + 20) this.reset();
-        }
-        draw() {
-            ctx.save();
-            ctx.translate(this.x, this.y);
-            ctx.rotate(this.rot * Math.PI / 180);
-            ctx.fillStyle = this.color;
-            ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h);
-            ctx.restore();
-        }
+    // ========== HERO ANIMATION ==========
+    function startHeroAnimation() {
+        hero.querySelector('.hero-content').style.animation = 'none';
+        void hero.querySelector('.hero-content').offsetHeight;
+        hero.querySelector('.hero-content').style.animation = 'fadeInUp 1s ease forwards';
     }
 
-    for (let i = 0; i < 120; i++) confettiPieces.push(new ConfettiPiece());
+    // ========== HERO SCROLL ==========
+    nextHint.addEventListener('click', () => {
+        cardsSection.classList.remove('hidden');
+        cardsSection.style.animation = 'fadeInUp 0.8s ease forwards';
+        setTimeout(() => showCardsOneByOne(), 400);
+        cardsSection.scrollIntoView({ behavior: 'smooth' });
+    });
 
-    function animateConfetti() {
-        if (!confettiRunning) return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        confettiPieces.forEach(p => { p.update(); p.draw(); });
-        requestAnimationFrame(animateConfetti);
+    // ========== CARDS APPEAR ==========
+    function showCardsOneByOne() {
+        cards.forEach((card, i) => {
+            setTimeout(() => {
+                card.classList.add('visible');
+            }, i * 300);
+        });
     }
 
-    animateConfetti();
-
-    // === CARDS FLIP ===
+    // ========== CARDS FLIP ==========
     cards.forEach(card => {
         card.addEventListener('click', function() {
-            this.classList.toggle('flipped');
-            const index = this.dataset.index;
+            if (this.classList.contains('flipped')) return;
+            this.classList.add('flipped');
+            flippedCount++;
+            updateProgress();
+            const index = parseInt(this.dataset.index);
             showModal(index);
+            if (flippedCount === cards.length) {
+                setTimeout(onAllCardsFlipped, 600);
+            }
         });
     });
 
-    // === MODAL ===
-    const photoLabels = ['📸 صورة ١', '📸 صورة ٢', '📸 صورة ٣', '📸 صورة ٤'];
+    function updateProgress() {
+        const pct = (flippedCount / cards.length) * 100;
+        progressFill.style.setProperty('--pct', pct + '%');
+        progressText.textContent = `${flippedCount} / ${cards.length}`;
+    }
+
+    // ========== ALL CARDS FLIPPED ==========
+    function onAllCardsFlipped() {
+        cardsComplete.classList.remove('hidden');
+        cardsComplete.style.animation = 'scaleIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+
+        setTimeout(() => {
+            cards.forEach((card, i) => {
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(-60px) scale(0.6) rotateY(20deg)';
+                }, i * 150);
+            });
+
+            setTimeout(() => {
+                cardsSection.style.transition = 'all 0.6s ease';
+                cardsSection.style.opacity = '0';
+                cardsSection.style.transform = 'translateY(-40px)';
+                setTimeout(() => {
+                    cardsSection.classList.add('hidden');
+                    cardsSection.style.opacity = '';
+                    cardsSection.style.transform = '';
+                    showCTA();
+                }, 600);
+            }, cards.length * 150 + 400);
+
+        }, 1200);
+    }
+
+    // ========== SHOW CTA ==========
+    function showCTA() {
+        ctaSection.classList.remove('hidden');
+        ctaSection.style.animation = 'fadeInUp 0.8s ease forwards';
+        ctaSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    ctaBtn.addEventListener('click', () => {
+        ctaBtn.style.transform = 'scale(0.9)';
+        setTimeout(() => {
+            window.location.href = 'page2.html';
+        }, 300);
+    });
+
+    // ========== MODAL ==========
+    const photoTitles = ['ذكرى أولى 🎯', 'ذكرى ثانية 🎯', 'ذكرى ثالثة 🎯', 'ذكرى رابعة 🎯'];
 
     function showModal(index) {
         const frame = modal.querySelector('.modal-photo-frame');
+        frame.style.animation = 'none';
+        void frame.offsetHeight;
         frame.innerHTML = `
-            <div style="text-align:center;padding:2rem;">
-                <div style="font-size:4rem;margin-bottom:1rem;">🖼️</div>
-                <h3 style="color:var(--accent-gold);font-size:1.5rem;margin-bottom:0.5rem;">${photoLabels[index]}</h3>
-                <p style="color:var(--text-secondary);">حط الصورة هنا بدل النص ده</p>
+            <div class="modal-photo-inner">
+                <div class="modal-icon">🖼️</div>
+                <h3 class="modal-photo-title">${photoTitles[index]}</h3>
+                <p class="modal-photo-sub">حط الصورة هنا بدل النص ده</p>
             </div>
         `;
+        frame.style.animation = 'scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards';
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
 
     function closeModal() {
-        modal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
+        modal.style.animation = 'fadeOut 0.3s ease forwards';
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.style.animation = '';
+            document.body.style.overflow = 'auto';
+        }, 300);
     }
 
     modalClose.addEventListener('click', closeModal);
@@ -122,16 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeModal();
-    });
-
-    // === CTA BUTTON ===
-    ctaBtn.addEventListener('click', () => {
-        window.location.href = 'page2.html';
-    });
-
-    // === SMOOTH SCROLL ===
-    document.querySelector('.scroll-hint').addEventListener('click', () => {
-        document.getElementById('cardsSection').scrollIntoView({ behavior: 'smooth' });
     });
 
 });

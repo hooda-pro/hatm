@@ -4,122 +4,147 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎉 الصفحة التانية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        .page2-container {
+        body {
+            overflow-x: hidden;
+        }
+
+        .page2-wrap {
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 2rem;
-            text-align: center;
             position: relative;
-            background: radial-gradient(ellipse at center, #1a1025 0%, #0a0a0f 70%);
+            background: radial-gradient(ellipse at 30% 20%, #1a1025 0%, #0a0a0f 70%);
             overflow: hidden;
         }
 
-        .page2-container::before {
-            content: '';
+        .page2-bg-orb {
             position: absolute;
-            width: 600px;
-            height: 600px;
             border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .page2-bg-orb:nth-child(1) {
+            width: 500px; height: 500px;
             background: radial-gradient(circle, rgba(212,168,83,0.06) 0%, transparent 70%);
-            top: -200px;
-            right: -200px;
-            animation: pulseGlow 4s ease-in-out infinite;
+            top: -150px; right: -150px;
+            animation: orbFloat 8s ease-in-out infinite;
         }
 
-        .page2-container::after {
-            content: '';
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            border-radius: 50%;
+        .page2-bg-orb:nth-child(2) {
+            width: 400px; height: 400px;
             background: radial-gradient(circle, rgba(192,132,151,0.05) 0%, transparent 70%);
-            bottom: -200px;
-            left: -200px;
-            animation: pulseGlow 4s ease-in-out infinite 2s;
+            bottom: -100px; left: -100px;
+            animation: orbFloat 10s ease-in-out infinite 3s;
         }
 
-        @keyframes pulseGlow {
-            0%, 100% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.1); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(20px, 30px) scale(1.05); }
         }
 
-        .page2-content {
+        .page2-card {
             position: relative;
             z-index: 1;
-            animation: fadeInUp 1s ease;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            animation: scaleIn 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .big-heart {
+        .heart-burst {
             font-size: 5rem;
-            animation: heartbeat 1.5s ease-in-out infinite;
             display: inline-block;
+            animation: heartBurst 1.5s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
 
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            15% { transform: scale(1.3); }
+        .heart-burst:active {
+            transform: scale(0.8);
+        }
+
+        @keyframes heartBurst {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.4); }
             30% { transform: scale(1); }
             45% { transform: scale(1.2); }
             60% { transform: scale(1); }
         }
 
-        .page2-title {
-            font-size: clamp(2rem, 5vw, 3.5rem);
+        .p2-title {
+            font-size: clamp(1.8rem, 4.5vw, 3rem);
             font-weight: 900;
-            background: linear-gradient(135deg, var(--accent-gold), var(--accent-rose), var(--accent-gold));
-            background-size: 200% 200%;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-rose), var(--accent-teal), var(--accent-gold));
+            background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: shimmer 3s ease infinite;
+            margin: 1.2rem 0;
+        }
+
+        .p2-sub {
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .icon-row {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
             margin: 1.5rem 0;
         }
 
-        .page2-sub {
-            font-size: clamp(1.2rem, 3vw, 1.8rem);
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
+        .icon-row span {
+            font-size: 2.2rem;
+            animation: iconPop 2s ease-in-out infinite;
+            display: inline-block;
         }
 
-        .page2-message {
-            max-width: 600px;
-            margin: 2rem auto;
-            padding: 2rem;
+        .icon-row span:nth-child(1) { animation-delay: 0s; }
+        .icon-row span:nth-child(2) { animation-delay: 0.2s; }
+        .icon-row span:nth-child(3) { animation-delay: 0.4s; }
+        .icon-row span:nth-child(4) { animation-delay: 0.6s; }
+        .icon-row span:nth-child(5) { animation-delay: 0.8s; }
+        .icon-row span:nth-child(6) { animation-delay: 1s; }
+        .icon-row span:nth-child(7) { animation-delay: 1.2s; }
+        .icon-row span:nth-child(8) { animation-delay: 1.4s; }
+
+        @keyframes iconPop {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-12px) scale(1.2); }
+        }
+
+        .p2-message-box {
+            margin: 1.5rem auto;
+            padding: 2rem 1.5rem;
             background: rgba(18, 18, 26, 0.7);
             border: 1px solid var(--border-glow);
             border-radius: 24px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 40px var(--shadow-gold);
         }
 
-        .page2-message p {
-            font-size: 1.2rem;
-            line-height: 2;
+        .p2-message-box p {
+            font-size: 1.15rem;
+            line-height: 2.2;
             color: var(--text-primary);
         }
 
-        .floating-icons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin: 2rem 0;
+        .p2-message-box .highlight {
+            color: var(--accent-gold);
+            font-weight: 700;
         }
-
-        .floating-icons span {
-            font-size: 2.5rem;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .floating-icons span:nth-child(2) { animation-delay: 0.4s; }
-        .floating-icons span:nth-child(3) { animation-delay: 0.8s; }
-        .floating-icons span:nth-child(4) { animation-delay: 1.2s; }
-        .floating-icons span:nth-child(5) { animation-delay: 1.6s; }
-        .floating-icons span:nth-child(6) { animation-delay: 2.0s; }
 
         .back-btn {
             padding: 1rem 2.5rem;
@@ -133,61 +158,108 @@
             cursor: pointer;
             transition: all 0.3s;
             margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(212,168,83,0.1));
+            transform: translateX(-100%);
+            transition: 0.4s;
+        }
+
+        .back-btn:hover::before {
+            transform: translateX(100%);
         }
 
         .back-btn:hover {
             background: var(--accent-gold);
             color: #0a0a0f;
             transform: scale(1.05);
+            box-shadow: 0 0 30px var(--shadow-gold);
         }
 
-        .stars {
-            position: absolute;
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        .falling-hearts {
+            position: fixed;
             inset: 0;
-            overflow: hidden;
             pointer-events: none;
             z-index: 0;
         }
 
-        .star {
+        .f-heart {
             position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle var(--duration) ease-in-out infinite;
+            font-size: 1.2rem;
+            animation: heartFall linear infinite;
+            opacity: 0.5;
         }
 
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 1; }
+        @keyframes heartFall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .sparkle-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            box-shadow: 0 0 6px var(--accent-gold);
+            animation: sparkleAnim ease-in-out infinite;
+        }
+
+        @keyframes sparkleAnim {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
 <body>
-    <div class="page2-container">
-        <div class="stars" id="stars"></div>
+    <div class="falling-hearts" id="fallingHearts"></div>
+    <div class="sparkle-container" id="sparkleContainer"></div>
 
-        <div class="page2-content">
-            <div class="big-heart">💖</div>
+    <div class="page2-wrap">
+        <div class="page2-bg-orb"></div>
+        <div class="page2-bg-orb"></div>
 
-            <h1 class="page2-title">كل سنة وانت طيب يا هيثم 🤍</h1>
-            <p class="page2-sub">ربنا يخليك ليا و يبارك في عمرك 🫶</p>
+        <div class="page2-card">
+            <div class="heart-burst" id="heartBtn">💖</div>
 
-            <div class="floating-icons">
+            <h1 class="p2-title">كل سنة وانت طيب يا هيثم 🤍</h1>
+            <p class="p2-sub">ربنا يخليك ليا و يبارك في عمرك يا أغلى الناس 🫶</p>
+
+            <div class="icon-row">
                 <span>🎂</span>
                 <span>🎉</span>
                 <span>🎈</span>
                 <span>🥳</span>
                 <span>🎊</span>
                 <span>💫</span>
+                <span>🌟</span>
+                <span>✨</span>
             </div>
 
-            <div class="page2-message">
+            <div class="p2-message-box">
                 <p>
                     يا أغلى حد في الدنيا 🫶<br>
-                    كل سنة و انت طيب و سعيد<br>
-                    و ربنا يحققلك كل اللي نفسك فيه<br>
+                    <span class="highlight">كل سنة وانت طيب</span> و سعيد<br>
+                    ربنا يحققلك كل اللي نفسك فيه<br>
                     و يخليك ليا دايمًا 🤍<br>
                     بحبك بجد ❤️
                 </p>
@@ -200,70 +272,120 @@
     </div>
 
     <script>
-        // Stars
-        const starsContainer = document.getElementById('stars');
-        for (let i = 0; i < 100; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.setProperty('--duration', (2 + Math.random() * 3) + 's');
-            star.style.animationDelay = Math.random() * 3 + 's';
-            star.style.width = (1 + Math.random() * 2) + 'px';
-            star.style.height = star.style.width;
-            starsContainer.appendChild(star);
+        // ===== FALLING HEARTS =====
+        const heartsContainer = document.getElementById('fallingHearts');
+        const heartEmojis = ['❤️', '💖', '💗', '💕', '🩷'];
+
+        for (let i = 0; i < 15; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'f-heart';
+            heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
+            heart.style.animationDuration = (6 + Math.random() * 8) + 's';
+            heart.style.animationDelay = (Math.random() * 10) + 's';
+            heartsContainer.appendChild(heart);
         }
 
-        // Confetti on page 2
+        // ===== SPARKLES =====
+        const sparkleContainer = document.getElementById('sparkleContainer');
+
+        for (let i = 0; i < 40; i++) {
+            const s = document.createElement('div');
+            s.className = 'sparkle';
+            s.style.left = Math.random() * 100 + '%';
+            s.style.top = Math.random() * 100 + '%';
+            s.style.animationDuration = (2 + Math.random() * 3) + 's';
+            s.style.animationDelay = (Math.random() * 4) + 's';
+            s.style.width = s.style.height = (1 + Math.random() * 3) + 'px';
+            sparkleContainer.appendChild(s);
+        }
+
+        // ===== HEART BURST ON CLICK =====
+        document.getElementById('heartBtn').addEventListener('click', function() {
+            this.style.animation = 'none';
+            void this.offsetHeight;
+            this.style.animation = 'heartBurst 1.5s ease-in-out infinite';
+
+            for (let i = 0; i < 8; i++) {
+                const miniHeart = document.createElement('div');
+                miniHeart.textContent = '💖';
+                miniHeart.style.cssText = `
+                    position: fixed;
+                    font-size: 1.5rem;
+                    pointer-events: none;
+                    z-index: 9999;
+                    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+                `;
+                const rect = this.getBoundingClientRect();
+                miniHeart.style.left = (rect.left + rect.width / 2) + 'px';
+                miniHeart.style.top = (rect.top + rect.height / 2) + 'px';
+                document.body.appendChild(miniHeart);
+
+                const angle = (i / 8) * Math.PI * 2;
+                const dist = 80 + Math.random() * 100;
+                const dx = Math.cos(angle) * dist;
+                const dy = Math.sin(angle) * dist;
+
+                requestAnimationFrame(() => {
+                    miniHeart.style.transform = `translate(${dx}px, ${dy}px) scale(0)`;
+                    miniHeart.style.opacity = '0';
+                });
+
+                setTimeout(() => miniHeart.remove(), 1200);
+            }
+        });
+
+        // ===== CONFETTI =====
         const canvas = document.createElement('canvas');
-        canvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:999';
+        canvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9998';
         document.body.appendChild(canvas);
         const ctx = canvas.getContext('2d');
-        let pieces = [];
+        let W2, H2, pieces = [];
 
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        function resize2() {
+            W2 = canvas.width = window.innerWidth;
+            H2 = canvas.height = window.innerHeight;
         }
-        resize();
-        window.addEventListener('resize', resize);
+        resize2();
+        window.addEventListener('resize', resize2);
 
-        class Piece {
+        class Conf {
             constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height - canvas.height;
-                this.w = 5 + Math.random() * 5;
-                this.h = 3 + Math.random() * 3;
-                this.color = ['#d4a853','#c08497','#5fa8a0','#f0d080','#e74c3c','#2ecc71','#9b59b6'][Math.floor(Math.random() * 7)];
-                this.speed = 1 + Math.random() * 2;
-                this.wind = (Math.random() - 0.5) * 0.5;
-                this.rot = Math.random() * 360;
-                this.rotSpeed = (Math.random() - 0.5) * 3;
+                this.x = Math.random() * W2;
+                this.y = Math.random() * H2 - H2;
+                this.w = 4 + Math.random() * 6;
+                this.h = 3 + Math.random() * 4;
+                this.c = ['#d4a853','#c08497','#5fa8a0','#f0d080','#e74c3c','#2ecc71','#9b59b6','#e67e22','#3498db'][Math.floor(Math.random() * 9)];
+                this.s = 1 + Math.random() * 2;
+                this.wind = (Math.random() - 0.5) * 0.6;
+                this.r = Math.random() * 360;
+                this.rs = (Math.random() - 0.5) * 5;
             }
-            update() {
-                this.y += this.speed;
+            u() {
+                this.y += this.s;
                 this.x += this.wind;
-                this.rot += this.rotSpeed;
-                if (this.y > canvas.height + 20) { this.y = -20; this.x = Math.random() * canvas.width; }
+                this.r += this.rs;
+                if (this.y > H2 + 20) { this.y = -20; this.x = Math.random() * W2; }
             }
-            draw() {
+            d() {
                 ctx.save();
                 ctx.translate(this.x, this.y);
-                ctx.rotate(this.rot * Math.PI / 180);
-                ctx.fillStyle = this.color;
+                ctx.rotate(this.r * Math.PI / 180);
+                ctx.fillStyle = this.c;
                 ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h);
                 ctx.restore();
             }
         }
 
-        for (let i = 0; i < 80; i++) pieces.push(new Piece());
+        for (let i = 0; i < 100; i++) pieces.push(new Conf());
 
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            pieces.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animate);
+        function loop() {
+            ctx.clearRect(0, 0, W2, H2);
+            pieces.forEach(p => { p.u(); p.d(); });
+            requestAnimationFrame(loop);
         }
-        animate();
+        loop();
     </script>
 </body>
 </html>
