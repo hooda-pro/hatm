@@ -442,6 +442,7 @@ body {
     border-radius: 12px;
     background-size: cover;
     background-position: center;
+    display: block;
 }
 
 .photo-1 { background-image: url('photo-1.jpg'); border: 2px solid var(--accent-rose); }

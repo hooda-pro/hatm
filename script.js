@@ -256,32 +256,43 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ========== CARDS FLIP ==========
+    const cardClicked = new Set();
+
     cards.forEach(card => {
         card.addEventListener('click', function(e) {
-            if (this.classList.contains('flipped')) return;
-            this.classList.add('flipped');
-            flippedCount++;
-            updateProgress();
+            const index = parseInt(this.dataset.index);
 
-            // Sparkle burst
-            const rect = this.getBoundingClientRect();
-            const cx = rect.left + rect.width / 2;
-            const cy = rect.top + rect.height / 2;
-            for (let i = 0; i < (isMobile ? 3 : 6); i++) {
-                const s = document.createElement('div');
-                s.textContent = '✨';
-                s.style.cssText = `position:fixed;font-size:0.8rem;pointer-events:none;z-index:999;left:${cx}px;top:${cy}px;transition:all 0.6s ease;`;
-                document.body.appendChild(s);
-                const a = (i / (isMobile ? 3 : 6)) * Math.PI * 2;
-                const d = 40 + Math.random() * 50;
-                requestAnimationFrame(() => {
-                    s.style.transform = `translate(${Math.cos(a)*d}px, ${Math.sin(a)*d}px) scale(0)`;
-                    s.style.opacity = '0';
-                });
-                setTimeout(() => s.remove(), 700);
+            if (!this.classList.contains('flipped')) {
+                this.classList.add('flipped');
+                flippedCount++;
+                updateProgress();
+
+                // Sparkle burst
+                const rect = this.getBoundingClientRect();
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
+                for (let i = 0; i < (isMobile ? 3 : 6); i++) {
+                    const s = document.createElement('div');
+                    s.textContent = '✨';
+                    s.style.cssText = `position:fixed;font-size:0.8rem;pointer-events:none;z-index:999;left:${cx}px;top:${cy}px;transition:all 0.6s ease;`;
+                    document.body.appendChild(s);
+                    const a = (i / (isMobile ? 3 : 6)) * Math.PI * 2;
+                    const d = 40 + Math.random() * 50;
+                    requestAnimationFrame(() => {
+                        s.style.transform = `translate(${Math.cos(a)*d}px, ${Math.sin(a)*d}px) scale(0)`;
+                        s.style.opacity = '0';
+                    });
+                    setTimeout(() => s.remove(), 700);
+                }
             }
 
-            showModal(parseInt(this.dataset.index));
+            if (cardClicked.has(index)) {
+                showFunnyModal(index);
+            } else {
+                cardClicked.add(index);
+                showModal(index);
+            }
+
             if (flippedCount === cards.length) setTimeout(onAllCardsFlipped, 1000);
         });
     });
@@ -347,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ========== MODAL ==========
-    const photoTitles = ['ذكرى أولى 🎯', 'ذكرى ثانية 🎯', 'ذكرى ثالثة 🎯', 'ذكرى رابعة 🎯'];
+    const photoTitles = ['ذكرى أولى 🎯', 'ذكرى ثانية 🔥', 'ذكرى ثالثة 💎', 'ذكرى رابعة 🌟'];
 
     function showModal(index) {
         const frame = modal.querySelector('.modal-photo-frame');
@@ -357,6 +368,22 @@ document.addEventListener('DOMContentLoaded', () => {
         frame.innerHTML = `
             <img src="photo-${photoNum}.jpg" alt="${photoTitles[index]}"
                  onerror="this.outerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:0.5rem;background:#0a0a0f;border-radius:14px;\'><span style=\'font-size:3rem;\'>🖼️</span><p style=\'color:var(--text-secondary);font-size:0.9rem;\'>الصورة مش موجودة</p></div>'">
+        `;
+        frame.style.animation = 'scaleIn 0.35s ease forwards';
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function showFunnyModal(index) {
+        const frame = modal.querySelector('.modal-photo-frame');
+        frame.style.animation = 'none';
+        void frame.offsetHeight;
+        frame.innerHTML = `
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;background:#0a0a0f;border-radius:14px;padding:2rem;">
+                <span style="font-size:4rem;margin-bottom:0.5rem;">😒</span>
+                <p style="font-size:1.3rem;font-weight:700;color:var(--accent-gold);margin-bottom:0.5rem;">اي ياعم مش مز انت اوي</p>
+                <p style="font-size:1rem;color:var(--text-secondary);">ليه بتفتح الصوره تاني هاااا 😂</p>
+            </div>
         `;
         frame.style.animation = 'scaleIn 0.35s ease forwards';
         modal.classList.remove('hidden');
