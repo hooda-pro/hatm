@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎉 الصفحة التانية</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page2-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            background: radial-gradient(ellipse at center, #1a1025 0%, #0a0a0f 70%);
+            overflow: hidden;
+        }
+
+        .page2-container::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212,168,83,0.06) 0%, transparent 70%);
+            top: -200px;
+            right: -200px;
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+
+        .page2-container::after {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(192,132,151,0.05) 0%, transparent 70%);
+            bottom: -200px;
+            left: -200px;
+            animation: pulseGlow 4s ease-in-out infinite 2s;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .page2-content {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease;
+        }
+
+        .big-heart {
+            font-size: 5rem;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.3); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.2); }
+            60% { transform: scale(1); }
+        }
+
+        .page2-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-rose), var(--accent-gold));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s ease infinite;
+            margin: 1.5rem 0;
+        }
+
+        .page2-sub {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .page2-message {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(18, 18, 26, 0.7);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .page2-message p {
+            font-size: 1.2rem;
+            line-height: 2;
+            color: var(--text-primary);
+        }
+
+        .floating-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .floating-icons span {
+            font-size: 2.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .floating-icons span:nth-child(2) { animation-delay: 0.4s; }
+        .floating-icons span:nth-child(3) { animation-delay: 0.8s; }
+        .floating-icons span:nth-child(4) { animation-delay: 1.2s; }
+        .floating-icons span:nth-child(5) { animation-delay: 1.6s; }
+        .floating-icons span:nth-child(6) { animation-delay: 2.0s; }
+
+        .back-btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: var(--font-main);
+            border: 1px solid var(--border-glow);
+            border-radius: 50px;
+            background: transparent;
+            color: var(--accent-gold);
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 2rem;
+        }
+
+        .back-btn:hover {
+            background: var(--accent-gold);
+            color: #0a0a0f;
+            transform: scale(1.05);
+        }
+
+        .stars {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page2-container">
+        <div class="stars" id="stars"></div>
+
+        <div class="page2-content">
+            <div class="big-heart">💖</div>
+
+            <h1 class="page2-title">كل سنة وانت طيب يا هيثم 🤍</h1>
+            <p class="page2-sub">ربنا يخليك ليا و يبارك في عمرك 🫶</p>
+
+            <div class="floating-icons">
+                <span>🎂</span>
+                <span>🎉</span>
+                <span>🎈</span>
+                <span>🥳</span>
+                <span>🎊</span>
+                <span>💫</span>
+            </div>
+
+            <div class="page2-message">
+                <p>
+                    يا أغلى حد في الدنيا 🫶<br>
+                    كل سنة و انت طيب و سعيد<br>
+                    و ربنا يحققلك كل اللي نفسك فيه<br>
+                    و يخليك ليا دايمًا 🤍<br>
+                    بحبك بجد ❤️
+                </p>
+            </div>
+
+            <a href="index.html">
+                <button class="back-btn">⬅️ رجعني للصفحة الأولى</button>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.setProperty('--duration', (2 + Math.random() * 3) + 's');
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.width = (1 + Math.random() * 2) + 'px';
+            star.style.height = star.style.width;
+            starsContainer.appendChild(star);
+        }
+
+        // Confetti on page 2
+        const canvas = document.createElement('canvas');
+        canvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:999';
+        document.body.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+        let pieces = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        class Piece {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.w = 5 + Math.random() * 5;
+                this.h = 3 + Math.random() * 3;
+                this.color = ['#d4a853','#c08497','#5fa8a0','#f0d080','#e74c3c','#2ecc71','#9b59b6'][Math.floor(Math.random() * 7)];
+                this.speed = 1 + Math.random() * 2;
+                this.wind = (Math.random() - 0.5) * 0.5;
+                this.rot = Math.random() * 360;
+                this.rotSpeed = (Math.random() - 0.5) * 3;
+            }
+            update() {
+                this.y += this.speed;
+                this.x += this.wind;
+                this.rot += this.rotSpeed;
+                if (this.y > canvas.height + 20) { this.y = -20; this.x = Math.random() * canvas.width; }
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rot * Math.PI / 180);
+                ctx.fillStyle = this.color;
+                ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h);
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < 80; i++) pieces.push(new Piece());
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            pieces.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
