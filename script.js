@@ -152,22 +152,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1500);
     }
 
-    // ========== HERO SCROLL ==========
-    nextHint.addEventListener('click', () => {
-        cardsSection.classList.remove('hidden');
-        cardsSection.style.animation = 'fadeInUp 0.8s ease forwards';
-        cardsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setTimeout(() => showCardsOneByOne(), 500);
-    });
-
-    // ========== CARDS APPEAR ==========
+    // ========== CARDS APPEAR ON SCROLL ==========
     function showCardsOneByOne() {
         cards.forEach((card, i) => {
             setTimeout(() => {
                 card.classList.add('visible');
-            }, i * 250);
+            }, i * 300);
         });
     }
+
+    const cardsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                cardsSection.classList.remove('hidden');
+                cardsSection.style.animation = 'fadeInUp 0.8s ease forwards';
+                setTimeout(() => showCardsOneByOne(), 400);
+                cardsObserver.unobserve(cardsSection);
+            }
+        });
+    }, { threshold: 0.15 });
+
+    setTimeout(() => {
+        cardsObserver.observe(cardsSection);
+    }, 2200);
+
+    nextHint.addEventListener('click', () => {
+        cardsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
 
     // ========== CARDS FLIP ==========
     cards.forEach(card => {
@@ -241,11 +252,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const frame = modal.querySelector('.modal-photo-frame');
         frame.style.animation = 'none';
         void frame.offsetHeight;
+        const photoNum = index + 1;
         frame.innerHTML = `
-            <div class="modal-photo-inner">
-                <div class="modal-icon">🖼️</div>
-                <h3 class="modal-photo-title">${photoTitles[index]}</h3>
-                <p class="modal-photo-sub">حط الصورة هنا بدل النص ده</p>
+            <div class="modal-photo-inner" style="padding:0;width:100%;height:100%;">
+                <img src="photo-${photoNum}.jpg" alt="${photoTitles[index]}"
+                     style="width:100%;height:100%;object-fit:cover;border-radius:18px;">
             </div>
         `;
         frame.style.animation = 'scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards';
