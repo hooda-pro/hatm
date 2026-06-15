@@ -122,16 +122,24 @@ body {
     border: 1px solid var(--border-glow);
     border-radius: 24px;
     box-shadow: 0 0 60px var(--shadow-gold), 0 20px 60px rgba(0, 0, 0, 0.6);
-    animation: fadeInUp 0.8s ease;
     max-width: 380px;
     width: 90%;
     backdrop-filter: blur(10px);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 .pass-icon {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     margin-bottom: 0.8rem;
-    animation: pulse 2s infinite;
+    animation: pulse 1.5s ease-in-out infinite, iconGlow 3s ease-in-out infinite;
+    display: inline-block;
+}
+
+@keyframes iconGlow {
+    0%, 100% { filter: drop-shadow(0 0 5px rgba(212,168,83,0.2)); }
+    50% { filter: drop-shadow(0 0 20px rgba(212,168,83,0.5)); }
 }
 
 .pass-title {
@@ -140,6 +148,12 @@ body {
     color: var(--text-primary);
     margin-bottom: 0.3rem;
     letter-spacing: 2px;
+    background: linear-gradient(135deg, var(--text-primary), var(--accent-gold), var(--text-primary));
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s ease infinite;
 }
 
 .pass-sub {
@@ -207,9 +221,9 @@ body {
 .error {
     color: #e74c3c;
     margin-top: 1rem;
-    font-weight: 600;
-    font-size: 0.95rem;
-    animation: shake 0.4s ease;
+    font-weight: 700;
+    font-size: 1rem;
+    animation: shake 0.5s ease;
 }
 
 /* ========== HERO ========== */
@@ -247,14 +261,26 @@ body {
 .balloon {
     font-size: 2.8rem;
     animation: float 4s ease-in-out infinite;
+    opacity: 0;
+    transform: translateY(40px) scale(0);
 }
 
-.b1 { animation-delay: 0s; }
-.b2 { animation-delay: 0.5s; }
-.b3 { animation-delay: 1s; }
-.b4 { animation-delay: 1.5s; }
-.b5 { animation-delay: 2s; }
-.b6 { animation-delay: 2.5s; }
+.hero-content .balloon {
+    animation: balloonRise 0.8s ease forwards, float 4s ease-in-out infinite;
+}
+
+.b1 { animation-delay: 0s, 0.8s; }
+.b2 { animation-delay: 0.2s, 1s; }
+.b3 { animation-delay: 0.4s, 1.2s; }
+.b4 { animation-delay: 0.6s, 1.4s; }
+.b5 { animation-delay: 0.8s, 1.6s; }
+.b6 { animation-delay: 1s, 1.8s; }
+
+@keyframes balloonRise {
+    0% { opacity: 0; transform: translateY(40px) scale(0); }
+    60% { opacity: 1; transform: translateY(-5px) scale(1.1); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
 
 .main-title {
     font-size: clamp(2rem, 5vw, 4rem);
@@ -277,14 +303,11 @@ body {
 }
 
 .next-hint {
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     gap: 0.3rem;
-    animation: bounce 2s infinite;
     cursor: pointer;
-    opacity: 0;
-    animation: fadeInUp 1s ease 2s forwards, bounce 2s 3s infinite;
 }
 
 .next-hint span {
@@ -746,6 +769,12 @@ body {
 @keyframes fadeOut {
     from { opacity: 1; }
     to { opacity: 0; }
+}
+
+@keyframes heroEntrance {
+    0% { opacity: 0; transform: scale(0.8) translateY(40px); }
+    50% { opacity: 0.5; transform: scale(1.02) translateY(-5px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 /* ========== RESPONSIVE ========== */

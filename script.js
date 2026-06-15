@@ -17,13 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressFill = document.querySelector('.progress-fill');
     const progressText = document.getElementById('progressText');
     const hero = document.getElementById('hero');
+    const passBox = document.querySelector('.password-box');
 
     const canvas = document.getElementById('bgCanvas');
     const ctx = canvas.getContext('2d');
     let W, H;
 
     let flippedCount = 0;
-    let showingCTA = false;
+    let isProcessingPassword = false;
 
     // ========== RESIZE ==========
     function resize() {
@@ -59,12 +60,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const alpha = this.alpha * (0.7 + 0.3 * Math.sin(Date.now() * this.pulseSpeed + this.pulseOffset));
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(212, 168, 83, ${alpha * 0.4})`;
+            ctx.fillStyle = `rgba(212, 168, 83, ${alpha * 0.5})`;
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.r * 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(212, 168, 83, ${alpha * 0.08})`;
             ctx.fill();
         }
     }
 
-    for (let i = 0; i < 80; i++) particles.push(new Particle());
+    for (let i = 0; i < 100; i++) particles.push(new Particle());
 
     function animateParticles() {
         ctx.clearRect(0, 0, W, H);
@@ -73,25 +78,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     animateParticles();
 
+    // ========== PASS BOX ENTRANCE ==========
+    setTimeout(() => {
+        passBox.style.opacity = '1';
+        passBox.style.transform = 'translateY(0)';
+    }, 300);
+
     // ========== PASSWORD ==========
     function checkPassword() {
-        if (passwordInput.value.trim() === PASSWORD) {
-            overlay.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            overlay.style.opacity = '0';
-            overlay.style.transform = 'scale(1.1)';
+        if (isProcessingPassword) return;
+        isProcessingPassword = true;
+
+        if (passwordInput.value.trim().toLowerCase() === PASSWORD.toLowerCase()) {
+            passBox.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            passBox.style.borderColor = 'rgba(46, 204, 113, 0.6)';
+            passBox.style.boxShadow = '0 0 80px rgba(46, 204, 113, 0.2), 0 0 40px var(--shadow-gold)';
+            passBox.querySelector('.pass-icon').textContent = '✅';
+
             setTimeout(() => {
-                overlay.classList.add('hidden');
-                overlay.style.opacity = '';
-                overlay.style.transform = '';
-                mainContent.classList.remove('hidden');
-                document.body.style.overflow = 'auto';
-                startHeroAnimation();
-            }, 600);
+                overlay.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+                overlay.style.opacity = '0';
+                overlay.style.transform = 'scale(1.15)';
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    overlay.style.opacity = '';
+                    overlay.style.transform = '';
+                    mainContent.classList.remove('hidden');
+                    document.body.style.overflow = 'auto';
+                    startHeroAnimation();
+                    isProcessingPassword = false;
+                }, 700);
+            }, 500);
         } else {
             errorMsg.classList.remove('hidden');
             passwordInput.value = '';
             passwordInput.focus();
-            setTimeout(() => errorMsg.classList.add('hidden'), 2000);
+            passBox.style.animation = 'none';
+            void passBox.offsetHeight;
+            passBox.style.animation = 'shake 0.5s ease';
+            setTimeout(() => {
+                errorMsg.classList.add('hidden');
+                passBox.style.animation = '';
+                isProcessingPassword = false;
+            }, 2500);
         }
     }
 
@@ -100,19 +129,35 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') checkPassword();
     });
 
+    passwordInput.addEventListener('focus', () => {
+        passBox.style.borderColor = 'var(--border-glow)';
+        passBox.style.boxShadow = '0 0 80px var(--shadow-gold), 0 20px 60px rgba(0,0,0,0.6)';
+    });
+
+    passwordInput.addEventListener('blur', () => {
+        passBox.style.borderColor = 'var(--border-glow)';
+        passBox.style.boxShadow = '0 0 60px var(--shadow-gold), 0 20px 60px rgba(0,0,0,0.6)';
+    });
+
     // ========== HERO ANIMATION ==========
     function startHeroAnimation() {
-        hero.querySelector('.hero-content').style.animation = 'none';
-        void hero.querySelector('.hero-content').offsetHeight;
-        hero.querySelector('.hero-content').style.animation = 'fadeInUp 1s ease forwards';
+        const heroContent = hero.querySelector('.hero-content');
+        heroContent.style.animation = 'none';
+        void heroContent.offsetHeight;
+        heroContent.style.animation = 'heroEntrance 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+
+        setTimeout(() => {
+            nextHint.style.display = 'flex';
+            nextHint.style.animation = 'fadeInUp 0.8s ease forwards, bounce 2s 0.8s infinite';
+        }, 1500);
     }
 
     // ========== HERO SCROLL ==========
     nextHint.addEventListener('click', () => {
         cardsSection.classList.remove('hidden');
         cardsSection.style.animation = 'fadeInUp 0.8s ease forwards';
-        setTimeout(() => showCardsOneByOne(), 400);
-        cardsSection.scrollIntoView({ behavior: 'smooth' });
+        cardsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => showCardsOneByOne(), 500);
     });
 
     // ========== CARDS APPEAR ==========
@@ -120,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cards.forEach((card, i) => {
             setTimeout(() => {
                 card.classList.add('visible');
-            }, i * 300);
+            }, i * 250);
         });
     }
 
@@ -134,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const index = parseInt(this.dataset.index);
             showModal(index);
             if (flippedCount === cards.length) {
-                setTimeout(onAllCardsFlipped, 600);
+                setTimeout(onAllCardsFlipped, 800);
             }
         });
     });
@@ -153,39 +198,40 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             cards.forEach((card, i) => {
                 setTimeout(() => {
-                    card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                    card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
                     card.style.opacity = '0';
-                    card.style.transform = 'translateY(-60px) scale(0.6) rotateY(20deg)';
-                }, i * 150);
+                    card.style.transform = 'translateY(-80px) scale(0.5) rotateY(30deg)';
+                }, i * 120);
             });
 
             setTimeout(() => {
                 cardsSection.style.transition = 'all 0.6s ease';
                 cardsSection.style.opacity = '0';
-                cardsSection.style.transform = 'translateY(-40px)';
+                cardsSection.style.transform = 'translateY(-50px)';
                 setTimeout(() => {
                     cardsSection.classList.add('hidden');
                     cardsSection.style.opacity = '';
                     cardsSection.style.transform = '';
                     showCTA();
                 }, 600);
-            }, cards.length * 150 + 400);
+            }, cards.length * 120 + 500);
 
-        }, 1200);
+        }, 1500);
     }
 
     // ========== SHOW CTA ==========
     function showCTA() {
         ctaSection.classList.remove('hidden');
         ctaSection.style.animation = 'fadeInUp 0.8s ease forwards';
-        ctaSection.scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => ctaSection.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
     }
 
     ctaBtn.addEventListener('click', () => {
-        ctaBtn.style.transform = 'scale(0.9)';
+        ctaBtn.style.transform = 'scale(0.85) rotate(-5deg)';
+        ctaBtn.textContent = 'يلا بينا 😈';
         setTimeout(() => {
             window.location.href = 'page2.html';
-        }, 300);
+        }, 400);
     });
 
     // ========== MODAL ==========
