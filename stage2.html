@@ -24,7 +24,6 @@
             position: absolute;
             inset: 0;
         }
-
         .s2-hud {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -59,86 +58,33 @@
             animation: fadeIn 0.4s ease;
         }
         .s2-overlay.hidden { display: none; }
-
-        .s2-ov-icon {
-            font-size: 4rem;
-            margin-bottom: 0.8rem;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        .s2-ov-title {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
+        .s2-ov-icon { font-size: 4rem; margin-bottom: 0.8rem; animation: pulse 1.5s ease-in-out infinite; }
+        .s2-ov-title { font-size: 1.5rem; font-weight: 900; color: var(--text-primary); margin-bottom: 0.5rem; }
         .s2-ov-sub {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
-            max-width: 350px;
+            font-size: 1rem; color: var(--text-secondary); margin-bottom: 1.5rem;
+            line-height: 1.8; max-width: 350px;
         }
         .s2-ov-btn {
-            padding: 0.9rem 2.5rem;
-            font-size: 1.2rem;
-            font-weight: 700;
-            font-family: var(--font-main);
-            border: none;
-            border-radius: 14px;
+            padding: 0.9rem 2.5rem; font-size: 1.2rem; font-weight: 700;
+            font-family: var(--font-main); border: none; border-radius: 14px;
             background: linear-gradient(135deg, var(--accent-gold), #f0d080);
-            color: #0a0a0f;
-            cursor: pointer;
-            transition: all 0.3s;
+            color: #0a0a0f; cursor: pointer; transition: all 0.3s;
             box-shadow: 0 0 30px var(--shadow-gold);
         }
         .s2-ov-btn:active { transform: scale(0.92); }
+        .s2-timer-num { font-size: 2.5rem; font-weight: 900; color: var(--accent-gold); margin: 0.5rem 0; }
 
-        .s2-timer-num {
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: var(--accent-gold);
-            margin: 0.5rem 0;
-        }
-
-        .s2-controls {
+        .s2-hint {
             position: fixed;
-            bottom: 1.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            display: grid;
-            grid-template-columns: 70px 70px 70px;
-            grid-template-rows: 70px 70px;
-            gap: 4px;
+            bottom: 2rem; left: 50%; transform: translateX(-50%);
+            z-index: 10; color: var(--text-secondary); font-size: 0.8rem;
+            opacity: 0.6; animation: blink 2s ease-in-out infinite;
+            pointer-events: none;
         }
-        .s2-ctrl-btn {
-            border: none;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.08);
-            color: var(--text-primary);
-            font-size: 1.5rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            touch-action: none;
-        }
-        .s2-ctrl-btn:active { background: rgba(212,168,83,0.2); }
-        .s2-ctrl-up { grid-column: 2; grid-row: 1; }
-        .s2-ctrl-left { grid-column: 1; grid-row: 2; }
-        .s2-ctrl-right { grid-column: 3; grid-row: 2; }
-        .s2-ctrl-down { grid-column: 2; grid-row: 2; }
+        @media (min-width: 769px) { .s2-hint { display: none; } }
 
-        @media (min-width: 769px) {
-            .s2-controls { display: none; }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes blink { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -156,11 +102,13 @@
         </div>
     </div>
 
+    <div class="s2-hint" id="touchHint">👆 اسحب اصبعك عشان تتحرك</div>
+
     <!-- Start overlay -->
     <div class="s2-overlay" id="startOverlay">
         <div class="s2-ov-icon">🎮</div>
         <h2 class="s2-ov-title">عشان تروح للمرحلة 2</h2>
-        <p class="s2-ov-sub">وريني شطارتك في اللعبة دي 👀<br>عشان تروح للمرحلة الجاية 🎯</p>
+        <p class="s2-ov-sub">وريني شطارتك في اللعبة دي 👀</p>
         <button class="s2-ov-btn" id="startBtn">ابدأ 🏃</button>
     </div>
 
@@ -173,34 +121,20 @@
         <button class="s2-ov-btn hidden" id="resultBtn">حاول تاني 🔄</button>
     </div>
 
-    <!-- Mobile controls -->
-    <div class="s2-controls" id="mobileControls">
-        <button class="s2-ctrl-btn s2-ctrl-up" data-dir="up">⬆️</button>
-        <button class="s2-ctrl-btn s2-ctrl-left" data-dir="left">⬅️</button>
-        <button class="s2-ctrl-btn s2-ctrl-right" data-dir="right">➡️</button>
-        <button class="s2-ctrl-btn s2-ctrl-down" data-dir="down">⬇️</button>
-    </div>
-
     <script>
-        // ===== AUTH CHECK =====
-        if (!sessionStorage.getItem('auth')) {
-            window.location.href = 'index.html';
-        }
+        if (!sessionStorage.getItem('auth')) { window.location.href = 'index.html'; }
 
-        // ===== CANVAS =====
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        function resizeCanvas() {
-            canvas.width = canvas.clientWidth;
-            canvas.height = canvas.clientHeight;
-        }
+        function resizeCanvas() { canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight; }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // ===== GAME STATE =====
-        const player = { x: 0, y: 0, r: 22, speed: 3.8 };
-        const enemy = { x: 0, y: 0, r: 35, speed: 2.1 };
+        const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        const player = { x: 0, y: 0, r: isMobile ? 18 : 22, speed: isMobile ? 2.8 : 3.5 };
+        const enemy = { x: 0, y: 0, r: isMobile ? 30 : 35, speed: isMobile ? 1.3 : 1.6 };
 
         let keys = {};
         let timeLeft = 30;
@@ -208,16 +142,12 @@
         let gameEnded = false;
         let animFrame = null;
         let timerInterval = null;
-        let activeDirs = { up: false, down: false, left: false, right: false };
 
-        // Load enemy image
+        let touchMoveX = 0, touchMoveY = 0;
+
         const enemyImg = new Image();
         enemyImg.src = 'photo-1.jpg';
 
-        // Touch direction tracking
-        let touchDirs = { up: false, down: false, left: false, right: false };
-
-        // ===== INIT =====
         function initPositions() {
             player.x = canvas.width * 0.2;
             player.y = canvas.height * 0.3;
@@ -225,43 +155,31 @@
             enemy.y = canvas.height * 0.7;
         }
 
-        // ===== RENDER =====
         function drawBackground() {
-            const grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width*0.7);
-            grad.addColorStop(0, '#1a1025');
-            grad.addColorStop(1, '#0a0a0f');
+            ctx.fillStyle = '#0a0a0f';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const cx = canvas.width/2, cy = canvas.height/2;
+            const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, canvas.width * 0.6);
+            grad.addColorStop(0, 'rgba(26,16,37,0.6)');
+            grad.addColorStop(1, 'transparent');
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Grid lines
-            ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-            ctx.lineWidth = 1;
-            for (let x = 0; x < canvas.width; x += 40) {
-                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-            }
-            for (let y = 0; y < canvas.height; y += 40) {
-                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-            }
-
-            // Boundary glow
-            ctx.shadowColor = '#d4a853';
-            ctx.shadowBlur = 30;
-            ctx.strokeStyle = 'rgba(212,168,83,0.15)';
+            ctx.strokeStyle = 'rgba(212,168,83,0.08)';
             ctx.lineWidth = 2;
-            ctx.strokeRect(15, 15, canvas.width - 30, canvas.height - 30);
-            ctx.shadowBlur = 0;
+            ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
         }
 
         function drawPlayer() {
             const x = player.x, y = player.y, r = player.r;
 
-            // Glow
             ctx.shadowColor = '#d4a853';
-            ctx.shadowBlur = 20;
+            ctx.shadowBlur = 25;
 
-            // Body
-            const grad = ctx.createRadialGradient(x-5, y-5, 0, x, y, r);
-            grad.addColorStop(0, '#f0d080');
+            const grad = ctx.createRadialGradient(x - r*0.3, y - r*0.3, 0, x, y, r);
+            grad.addColorStop(0, '#fff5d6');
+            grad.addColorStop(0.3, '#f0d080');
             grad.addColorStop(1, '#d4a853');
             ctx.fillStyle = grad;
             ctx.beginPath();
@@ -270,192 +188,108 @@
 
             ctx.shadowBlur = 0;
 
-            // Eyes
-            ctx.fillStyle = '#1a1025';
+            ctx.fillStyle = 'rgba(255,255,255,0.4)';
             ctx.beginPath();
-            ctx.arc(x - 7, y - 4, 4, 0, Math.PI * 2);
-            ctx.arc(x + 7, y - 4, 4, 0, Math.PI * 2);
+            ctx.arc(x - r*0.3, y - r*0.3, r*0.25, 0, Math.PI * 2);
             ctx.fill();
-
-            // Eye shine
-            ctx.fillStyle = '#fff';
-            ctx.beginPath();
-            ctx.arc(x - 9, y - 6, 1.5, 0, Math.PI * 2);
-            ctx.arc(x + 5, y - 6, 1.5, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Smile
-            ctx.strokeStyle = '#1a1025';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.arc(x, y + 2, 10, 0.1, Math.PI - 0.1);
-            ctx.stroke();
-
-            // Hat
-            ctx.fillStyle = '#c08497';
-            ctx.fillRect(x - 14, y - r - 8, 28, 6);
-            ctx.fillRect(x - 8, y - r - 18, 16, 12);
-
-            // Name tag
-            ctx.fillStyle = 'rgba(10,10,15,0.6)';
-            ctx.fillRect(x - 15, y + r + 2, 30, 16);
-            ctx.fillStyle = '#d4a853';
-            ctx.font = '8px Cairo';
-            ctx.textAlign = 'center';
-            ctx.fillText('🫵', x, y + r + 14);
         }
 
         function drawEnemy() {
             const x = enemy.x, y = enemy.y, r = enemy.r;
 
-            // Shadow
-            ctx.shadowColor = 'rgba(231,76,60,0.3)';
-            ctx.shadowBlur = 30;
+            ctx.shadowColor = 'rgba(231,76,60,0.4)';
+            ctx.shadowBlur = 25;
 
             if (enemyImg.complete && enemyImg.naturalWidth > 0) {
-                // Draw image as circle clip
                 ctx.save();
                 ctx.beginPath();
                 ctx.arc(x, y, r, 0, Math.PI * 2);
                 ctx.clip();
                 ctx.drawImage(enemyImg, x - r, y - r, r * 2, r * 2);
                 ctx.restore();
-
-                // Red border
                 ctx.shadowBlur = 0;
-                ctx.strokeStyle = 'rgba(231,76,60,0.6)';
-                ctx.lineWidth = 3;
+                ctx.strokeStyle = 'rgba(231,76,60,0.5)';
+                ctx.lineWidth = 2;
                 ctx.beginPath();
                 ctx.arc(x, y, r, 0, Math.PI * 2);
                 ctx.stroke();
             } else {
                 ctx.shadowBlur = 0;
-                const grad = ctx.createRadialGradient(x-5, y-5, 0, x, y, r);
+                const grad = ctx.createRadialGradient(x - r*0.3, y - r*0.3, 0, x, y, r);
                 grad.addColorStop(0, '#e74c3c');
                 grad.addColorStop(1, '#c0392b');
                 ctx.fillStyle = grad;
                 ctx.beginPath();
                 ctx.arc(x, y, r, 0, Math.PI * 2);
                 ctx.fill();
-
-                // Angry eyes
-                ctx.fillStyle = '#fff';
-                ctx.beginPath();
-                ctx.arc(x - 10, y - 5, 5, 0, Math.PI * 2);
-                ctx.arc(x + 10, y - 5, 5, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = '#1a1025';
-                ctx.beginPath();
-                ctx.arc(x - 10, y - 5, 3, 0, Math.PI * 2);
-                ctx.arc(x + 10, y - 5, 3, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Angry mouth
-                ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(x, y + 8, 8, Math.PI + 0.3, -0.3);
-                ctx.stroke();
             }
 
             ctx.shadowBlur = 0;
-
-            // "!" warning
-            ctx.font = '16px Cairo';
+            ctx.font = '14px Cairo';
             ctx.fillStyle = '#e74c3c';
             ctx.textAlign = 'center';
-            ctx.fillText('❗', x, y - r - 10);
+            ctx.fillText('❗', x, y - r - 8);
         }
 
-        function drawTimer() {
-            // HUD already shows timer, but draw circle in corner too
-            const cx = canvas.width / 2;
-            const cy = 30;
-            const pct = timeLeft / 30;
-
-            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.arc(cx, cy, 22, 0, Math.PI * 2);
-            ctx.stroke();
-
-            ctx.strokeStyle = pct > 0.3 ? '#d4a853' : '#e74c3c';
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.arc(cx, cy, 22, -Math.PI/2, -Math.PI/2 + (pct * Math.PI * 2));
-            ctx.stroke();
-        }
-
-        function render() {
-            drawBackground();
-            drawEnemy();
-            drawPlayer();
-            drawTimer();
-        }
-
-        // ===== GAME LOOP =====
         function update() {
             if (!gameActive || gameEnded) return;
 
-            // Player movement
             let dx = 0, dy = 0;
-            if (keys['ArrowUp'] || keys['w'] || keys['W'] || touchDirs.up) dy = -1;
-            if (keys['ArrowDown'] || keys['s'] || keys['S'] || touchDirs.down) dy = 1;
-            if (keys['ArrowLeft'] || keys['a'] || keys['A'] || touchDirs.left) dx = -1;
-            if (keys['ArrowRight'] || keys['d'] || keys['D'] || touchDirs.right) dx = 1;
 
-            // Normalize diagonal
-            if (dx !== 0 && dy !== 0) {
-                const len = Math.sqrt(2);
-                dx /= len;
-                dy /= len;
+            if (isMobile) {
+                dx = touchMoveX;
+                dy = touchMoveY;
+                const mag = Math.sqrt(dx*dx + dy*dy);
+                if (mag > 1) { dx /= mag; dy /= mag; }
+                touchMoveX *= 0.8;
+                touchMoveY *= 0.8;
+            } else {
+                if (keys['ArrowUp'] || keys['w'] || keys['W']) dy = -1;
+                if (keys['ArrowDown'] || keys['s'] || keys['S']) dy = 1;
+                if (keys['ArrowLeft'] || keys['a'] || keys['A']) dx = -1;
+                if (keys['ArrowRight'] || keys['d'] || keys['D']) dx = 1;
             }
+
+            if (dx !== 0 && dy !== 0) { const n = Math.SQRT2; dx /= n; dy /= n; }
 
             player.x += dx * player.speed;
             player.y += dy * player.speed;
 
-            // Keep in bounds
-            const margin = player.r + 15;
-            player.x = Math.max(margin, Math.min(canvas.width - margin, player.x));
-            player.y = Math.max(margin, Math.min(canvas.height - margin, player.y));
+            const pm = player.r + 20;
+            player.x = Math.max(pm, Math.min(canvas.width - pm, player.x));
+            player.y = Math.max(pm, Math.min(canvas.height - pm, player.y));
 
-            // Enemy AI - chase
             const ex = player.x - enemy.x;
             const ey = player.y - enemy.y;
             const dist = Math.sqrt(ex * ex + ey * ey);
 
             if (dist > 0) {
-                const speed = enemy.speed + (timeLeft < 10 ? 0.4 : 0); // Speeds up at end
-                enemy.x += (ex / dist) * speed;
-                enemy.y += (ey / dist) * speed;
+                const spd = enemy.speed + (timeLeft < 8 ? 0.3 : 0);
+                enemy.x += (ex / dist) * spd;
+                enemy.y += (ey / dist) * spd;
             }
 
-            // Keep enemy in bounds
-            const em = enemy.r + 15;
+            const em = enemy.r + 20;
             enemy.x = Math.max(em, Math.min(canvas.width - em, enemy.x));
             enemy.y = Math.max(em, Math.min(canvas.height - em, enemy.y));
 
-            // Collision check
-            const minDist = player.r + enemy.r - 10;
-            if (dist < minDist) {
-                gameActive = false;
-                gameEnded = true;
+            if (dist < player.r + enemy.r - 8) {
+                gameActive = false; gameEnded = true;
                 clearInterval(timerInterval);
                 showCaught();
                 return;
             }
 
-            render();
+            drawBackground();
+            drawEnemy();
+            drawPlayer();
         }
 
         function gameLoop() {
             update();
-            if (!gameEnded) {
-                animFrame = requestAnimationFrame(gameLoop);
-            }
+            if (!gameEnded) animFrame = requestAnimationFrame(gameLoop);
         }
 
-        // ===== TIMER =====
         function startTimer() {
             timeLeft = 30;
             document.getElementById('timerDisplay').textContent = '30';
@@ -463,16 +297,13 @@
                 timeLeft--;
                 document.getElementById('timerDisplay').textContent = Math.ceil(timeLeft);
                 if (timeLeft <= 0) {
-                    timeLeft = 0;
-                    gameActive = false;
-                    gameEnded = true;
+                    gameActive = false; gameEnded = true;
                     clearInterval(timerInterval);
                     showWin();
                 }
             }, 1000);
         }
 
-        // ===== OVERLAYS =====
         const startOverlay = document.getElementById('startOverlay');
         const resultOverlay = document.getElementById('resultOverlay');
         const resultIcon = document.getElementById('resultIcon');
@@ -498,19 +329,13 @@
             resultSub.textContent = 'أمال لما بتخش علي اسكواد بتقع نوك ليه؟! 😂';
             resultBtn.classList.add('hidden');
             redirectTimer.classList.remove('hidden');
-
             let secs = 5;
             redirectTimer.textContent = `خلال ${secs} ثواني...`;
             const ri = setInterval(() => {
                 secs--;
                 if (secs > 0) redirectTimer.textContent = `خلال ${secs} ثواني...`;
-                else {
-                    clearInterval(ri);
-                    // Placeholder - user will tell me where to redirect
-                    redirectTimer.textContent = 'يتبع... 🤔';
-                }
+                else { clearInterval(ri); redirectTimer.textContent = 'يتبع... 🤔'; }
             }, 1000);
-
             resultOverlay.classList.remove('hidden');
         }
 
@@ -519,59 +344,58 @@
             initPositions();
             timeLeft = 30;
             document.getElementById('timerDisplay').textContent = '30';
-            gameActive = true;
-            gameEnded = false;
+            gameActive = true; gameEnded = false;
             if (timerInterval) clearInterval(timerInterval);
             startTimer();
             animFrame = requestAnimationFrame(gameLoop);
         }
 
-        // ===== START =====
         document.getElementById('startBtn').addEventListener('click', () => {
             startOverlay.classList.add('hidden');
+            document.getElementById('touchHint').classList.add('hidden');
             initPositions();
-            gameActive = true;
-            gameEnded = false;
+            gameActive = true; gameEnded = false;
             startTimer();
-            render();
+            drawBackground(); drawEnemy(); drawPlayer();
             animFrame = requestAnimationFrame(gameLoop);
         });
 
         // ===== KEYBOARD =====
         document.addEventListener('keydown', (e) => {
             keys[e.key] = true;
-            if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) {
-                e.preventDefault();
-            }
+            if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
         });
-        document.addEventListener('keyup', (e) => {
-            keys[e.key] = false;
+        document.addEventListener('keyup', (e) => { keys[e.key] = false; });
+
+        // ===== TOUCH DRAG =====
+        let lastTX = 0, lastTY = 0;
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const t = e.touches[0];
+            lastTX = t.clientX;
+            lastTY = t.clientY;
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const t = e.touches[0];
+            touchMoveX = (t.clientX - lastTX) * 0.08;
+            touchMoveY = (t.clientY - lastTY) * 0.08;
+            const mag = Math.sqrt(touchMoveX*touchMoveX + touchMoveY*touchMoveY);
+            if (mag > 2) { touchMoveX /= mag/2; touchMoveY /= mag/2; }
+            lastTX = t.clientX;
+            lastTY = t.clientY;
+        });
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            touchMoveX = 0;
+            touchMoveY = 0;
+        });
+        canvas.addEventListener('touchcancel', (e) => {
+            touchMoveX = 0;
+            touchMoveY = 0;
         });
 
-        // ===== TOUCH CONTROLS =====
-        const ctrlBtns = document.querySelectorAll('.s2-ctrl-btn');
-        ctrlBtns.forEach(btn => {
-            const dir = btn.dataset.dir;
-
-            btn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                touchDirs[dir] = true;
-            });
-            btn.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                touchDirs[dir] = false;
-            });
-            btn.addEventListener('touchcancel', (e) => {
-                touchDirs[dir] = false;
-            });
-            // Mouse fallback
-            btn.addEventListener('mousedown', () => { touchDirs[dir] = true; });
-            btn.addEventListener('mouseup', () => { touchDirs[dir] = false; });
-            btn.addEventListener('mouseleave', () => { touchDirs[dir] = false; });
-        });
-
-        // Initial render
-        render();
+        drawBackground(); drawEnemy(); drawPlayer();
     </script>
 </body>
 </html>
