@@ -131,6 +131,26 @@
             box-shadow: none;
         }
 
+        .p3-next {
+            width: 100%;
+            max-width: 250px;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #5fa8a0, #4a9a8f);
+            color: #0a0a0f;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: var(--font-main);
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            box-shadow: 0 0 20px rgba(95,168,160,0.4);
+            animation: scaleIn 0.4s ease;
+        }
+        .p3-next:active { transform: scale(0.95); }
+        .p3-next.hidden { display: none; }
+
         .p3-error {
             margin-top: 1rem;
             padding: 1rem;
@@ -207,6 +227,7 @@
         </div>
 
         <button class="p3-done" id="doneBtn">تم ✅</button>
+        <button class="p3-next" id="nextBtn">كمل وريح بالك 👌</button>
 
         <div id="errorBox" class="p3-error hidden">
             <div class="error-icon">🚫</div>
@@ -238,6 +259,7 @@
         // ===== NUMPAD =====
         const display = document.getElementById('display');
         const doneBtn = document.getElementById('doneBtn');
+        const nextBtn = document.getElementById('nextBtn');
         const errorBox = document.getElementById('errorBox');
         const clearBtn = document.getElementById('clearBtn');
         const blockTimerEl = document.getElementById('blockTimer');
@@ -275,10 +297,14 @@
         doneBtn.addEventListener('click', () => {
             if (blocked || value.length !== 3) return;
 
-            if (value === '111') {
-                // Correct - go back
+            if (value === '137') {
+                // Correct - show defiance message then go to game
                 doneBtn.textContent = 'تمام 🎉';
-                setTimeout(() => { window.location.href = 'index.html'; }, 800);
+                doneBtn.disabled = true;
+                document.querySelector('.p3-icon').textContent = '😏';
+                document.querySelector('.p3-title').innerHTML = 'بص انا بعاند معاك<br>و مش هحولك يلا كمل غصب عنك 😂';
+                document.querySelector('.p3-sub').textContent = '';
+                setTimeout(() => { window.location.href = 'stage2.html'; }, 2000);
             } else {
                 // Wrong - block for 1 minute
                 blocked = true;
@@ -301,6 +327,10 @@
                     }
                 }, 1000);
             }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            window.location.href = 'stage2.html';
         });
 
         updateDisplay();

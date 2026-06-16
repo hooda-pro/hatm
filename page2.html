@@ -555,7 +555,7 @@
                 p2Timer.textContent = count;
                 if (count <= 0) {
                     clearInterval(timerInterval);
-                    window.location.href = 'index.html';
+                    window.location.href = 'page3.html';
                 }
             }, 1000);
         }
@@ -569,7 +569,7 @@
 
         dialogNo.addEventListener('click', () => {
             hideConfirmDialog();
-            window.location.href = 'page3.html';
+            window.location.href = 'stage2.html';
         });
 
         confirmDialog.addEventListener('click', (e) => {
@@ -579,7 +579,7 @@
         timerDialog.addEventListener('click', (e) => {
             if (e.target === timerDialog) {
                 clearInterval(timerInterval);
-                window.location.href = 'index.html';
+                window.location.href = 'page3.html';
             }
         });
     </script>
